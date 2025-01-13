@@ -1,0 +1,14 @@
+{
+  "contacts":[
+    {
+      "id": 1,
+      "name": "Anny Smith",
+      "phone": "7564827483"
+    },
+    {
+      "id": 2,
+      "name": "Katt Model",
+      "phone": "4233312421"
+    }
+  ]
+}

@@ -1,5 +1,6 @@
 
-/* Tengo que ser capaz de entender todo esto de una vez por todas ...*/
+
+/* Tengo que ser capaz de  vamos con toda entender todo esto de una vez por todas ...*/
 
 /* 
  * Primera parte del componente App.jsx que es el componente principal encargado de 

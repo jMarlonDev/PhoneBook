@@ -1,0 +1,139 @@
+#root {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 2rem;
+  text-align: center;
+}
+
+body {
+  background: #CEC4AB;
+  color: #4B494A;
+}
+
+input:focus {
+  outline: none;
+}
+
+.containerContacts {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  column-gap: 3rem;
+  margin-top: 3rem;
+  border: 2px solid #737177;
+  border-radius: 15px;
+  padding: 70px;
+  max-height: 300px;
+  overflow-y: auto;
+  -webkit-box-shadow: 10px 10px 5px 0px rgba(105, 106, 111, 1);
+  -moz-box-shadow: 10px 10px 5px 0px rgba(105, 106, 111, 1);
+  box-shadow: 10px 10px 5px 0px rgba(105, 106, 111, 1);
+  scrollbar-width: thin;
+  /* Firefox */
+  scrollbar-color: transparent transparent;
+
+}
+
+.containerContacts::-webkit-scrollbar {
+  width: 0;
+  /* Ocultar barra (Webkit) */
+}
+
+.containerContacts:hover::-webkit-scrollbar {
+  width: 8px;
+  /* Mostrar barra al pasar el cursor */
+  background-color: transparent;
+  /* Fondo transparente */
+}
+
+.containerContacts::-webkit-scrollbar-thumb {
+  background-color: #333031;
+  /* Color del "pulgar" de la barra */
+  border-radius: 10px;
+  /* Redondear borde */
+}
+
+.contact {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 3rem;
+  border: 2px solid #737177;
+  padding: 10px;
+  border-radius: 15px;
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 1rem;
+}
+
+.contactsProperties {
+  display: flex;
+  justify-content: center;
+  gap: 7px;
+}
+
+.deleteBtn {
+  width: 80%;
+}
+
+.submitBtn {
+  width: 40%;
+}
+
+.inputName{
+  margin-right: 24px;
+}
+
+.inputPhone {
+  margin-right: 24px;
+}
+
+
+.bi-person-square {
+  font-size: 2.5rem;
+}
+
+.containerFilter {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+
+
+}
+
+.filter {
+  margin-bottom: 80px;
+}
+
+.filterInput {
+  width: 65%;
+  border: none;
+  border-radius: 5px;
+  padding: 8px 0;
+  text-align: center;
+  font-size: 1rem;
+  -webkit-box-shadow: 3px 5px 5px 0px rgba(114, 114, 119, 1);
+  -moz-box-shadow: 3px 5px 5px 0px rgba(114, 114, 119, 1);
+  box-shadow: 3px 5px 5px 0px rgba(114, 114, 119, 1);
+}
+
+.inputForm {
+  border: none;
+  border-radius: 5px;
+  width: 35%;
+  padding: 5px;
+  -webkit-box-shadow: 3px 5px 5px 0px rgba(114, 114, 119, 1);
+  -moz-box-shadow: 3px 5px 5px 0px rgba(114, 114, 119, 1);
+  box-shadow: 3px 5px 5px 0px rgba(114, 114, 119, 1);
+}
+
+span {
+  font-weight: bold;
+  font-size: 1.1rem;
+}

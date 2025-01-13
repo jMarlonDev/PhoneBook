@@ -8,7 +8,7 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "server": "nodemon ./phoneBookServer.js"
+    "server": "node ./phoneBookServer.js"
   },
   "dependencies": {
     "cors": "^2.8.5",

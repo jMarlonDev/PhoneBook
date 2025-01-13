@@ -5,10 +5,6 @@ const app = express();
 const contactsObj = require("./data/contacts.json");
 let contacts = contactsObj.contacts;
 
-/* Variables de configuracion  para definir en que puerto se va a cargar el servidor en este caso 
- * el puerto sera el puerto 3001 */
-app.set("port", 3001);
-
 /* Middlewares:
  * - json() para poder cuando se haga la solicitud al servidor este envíe la respuesta en formato JSON 
  * - cors() para poder solucionar el problema de intentar hacer peticiones de Origen Cruzado con 
@@ -104,5 +100,8 @@ app.put("/contacts/:id", (request, response) => {
 
 })
 
-app.listen(app.get("port"));
-console.log("l servidor esta prendido en el puerto 3001");
+const PORT = process.env.PORT || 3001;
+app.listen(PORT, () => {
+  console.log("l servidor esta prendido en el puerto 3001");
+})
+

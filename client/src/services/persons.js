@@ -17,7 +17,7 @@
 
 import axios from "axios";
 
-const urlPersons = "http://localhost:3001/contacts";
+const urlPersons = process.env.REACT_APP_API_URL || "http://localhost:3001/contacts";
 
 async function getAllPersons() {
   const request = axios.get(urlPersons);

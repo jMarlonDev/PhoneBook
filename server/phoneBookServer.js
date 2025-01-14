@@ -4,7 +4,7 @@ const cors = require("cors");
 const app = express();
 const contactsObj = require("./data/contacts.json");
 let contacts = contactsObj.contacts;
-
+const path = require('path'); // Importa el módulo path
 /* Middlewares:
  * - json() para poder cuando se haga la solicitud al servidor este envíe la respuesta en formato JSON 
  * - cors() para poder solucionar el problema de intentar hacer peticiones de Origen Cruzado con 
@@ -20,9 +20,16 @@ app.use(cors({
  * Indicamos la url donde se van a cargar los datos que provienen del archivo json contactsObj 
  * y enviamos como respuesta todos los datos de ese archivo en formato json 
  * ahora al cargar la url de http://localhost:3001/contacts/ se van a cargar los datos en formato json*/
+app.use(express.static(path.join(__dirname, 'dist')));
+
 app.get("/contacts", (request, response) => {
   response.json(contacts);
 })
+
+// Manejo de rutas para React Router
+app.get('*', (req, res) => {
+    res.sendFile(path.join(__dirname, 'dist', 'index.html'));
+});
 
 
 /* Solicitud Post
@@ -100,7 +107,8 @@ app.put("/contacts/:id", (request, response) => {
 
 })
 
-const PORT = process.env.PORT || 3001;
+const PORT = process.env.PORT || 3000;
+
 app.listen(PORT, () => {
   console.log("l servidor esta prendido en el puerto 3001");
 })

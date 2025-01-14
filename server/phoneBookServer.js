@@ -10,6 +10,7 @@ const path = require('path'); // Importa el módulo path
  * - cors() para poder solucionar el problema de intentar hacer peticiones de Origen Cruzado con 
  *   este Middlewar podremos hacer solicitudes desde cualquier parte a nuestro servidor */
 app.use(express.json())
+
 app.use(cors({
   origin: "*", // Permitir cualquier dominio
 }));
@@ -22,7 +23,7 @@ app.use(cors({
  * ahora al cargar la url de http://localhost:3001/contacts/ se van a cargar los datos en formato json*/
 app.use(express.static(path.join(__dirname, 'dist')));
 
-app.get("/contacts", (request, response) => {
+app.get("/api/contacts", (request, response) => {
   response.json(contacts);
 })
 
@@ -46,7 +47,7 @@ app.get('*', (req, res) => {
  * y a este numero le suma 1 así comprobamos que cada vez que se genere un nuevo elemento lo haga en orden
 */
 
-app.post("/contacts", (request, response) => {
+app.post("/api/contacts", (request, response) => {
   const newContact = request.body;
 
   newContact.id = contacts.length > 0 ? Math.max(...contacts.map((contact) => contact.id)) + 1 : 1;
@@ -66,7 +67,7 @@ app.post("/contacts", (request, response) => {
  * el elemento que contenga el ID que se paso en la solicitud si se encuentra.
 */
 
-app.delete("/contacts/:id", (request, response) => {
+app.delete("/api/contacts/:id", (request, response) => {
   const id = Number(request.params.id);
   const contactFind = contacts.find((contact) => contact.id === id);
 
@@ -92,7 +93,7 @@ app.delete("/contacts/:id", (request, response) => {
  * y devolvemos como respuesta el nuevo elemento ya modificado al cliente
  * */
 
-app.put("/contacts/:id", (request, response) => {
+app.put("/api/contacts/:id", (request, response) => {
   const id = Number(request.params.id);
   const newContact = request.body;
   const contactsUpdate = contacts.find((contact) => contact.id === id);

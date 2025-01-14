@@ -18,7 +18,7 @@
 import axios from "axios";
 
 const API_URL = process.env.REACT_APP_API_URL || "http://localhost:3001";
-const urlPersons = API_URL === "http://localhost:3001" ? `${API_URL}/contacts` : "/contacts";
+const urlPersons = API_URL === "http://localhost:3001" ? `${API_URL}/api/contacts` : "/api/contacts";
 
 async function getAllPersons() {
   const request = axios.get(urlPersons);

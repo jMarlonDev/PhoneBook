@@ -17,7 +17,7 @@
 
 import axios from "axios";
 
-const urlPersons = "http://localhost:4000/api/contacts";
+const urlPersons = "/api/contacts";
 async function getAllPersons() {
   const request = await axios.get(urlPersons);
   return request.data;

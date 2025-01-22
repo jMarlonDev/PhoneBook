@@ -4,7 +4,7 @@
  * En la interfaz web se muestra un campo de ( input ) para ingresar un nombre que puede corresponder 
  * a un elemento dentro del arreglo que almacena los datos de todos los contactos con el nombre y el numero de 
  * telefono, para este caso en el campo solo ingresaremos el nombre y si hay coincidencias del nombre ingresado 
- * con un que ya existe en el arreglo entonces en la interfaz vamos a mostrar ese elemento que se busco 
+ * con uno que ya existe en el arreglo entonces en la interfaz vamos a mostrar ese elemento que se busco 
  * con las propiedades de Name y Phone 
  * Pero caso contrario si el nombre que ingramos no coincide con ningún elemento dentro del arreglo 
  * entonces devolvemos un mensaje como el siguiente ( Not Results Found )
@@ -19,7 +19,7 @@ import "../App.css"
 /* El componente Filter recibe como parametro el arreglo que contiene a la lista de contactos que en este caso 
  * vamos a usar para filtrar un solo elemento 
 */
-const Filter = ({ arrayPerson }) => {
+const Filter = ({ arrayPersons }) => {
 
   /* Definición de las variables y funciones que van a actualizar las variables
    * - setFilterName() función encargada de actualizar el valor de la variable filterName 
@@ -59,7 +59,7 @@ const Filter = ({ arrayPerson }) => {
     }
 
     // Buscar la persona que coincida con el nombre ingresado
-    const personFound = arrayPerson.find((person) =>
+    const personFound = arrayPersons.find((person) =>
       person.name.toLowerCase().includes(value.toLowerCase())
     );
 

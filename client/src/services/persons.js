@@ -17,10 +17,10 @@
 
 import axios from "axios";
 
-const urlPersons = "/api/contacts"; // Usa la url relativa para la API
+const urlPersons = "http://localhost:4000/api/contacts";
 async function getAllPersons() {
-  const request = axios.get(urlPersons);
-  return await request.then(response => response.data);
+  const request = await axios.get(urlPersons);
+  return request.data;
 }
 
 
@@ -29,14 +29,18 @@ async function createPerson(newObjectPerson) {
   return response.data;
 }
 
-async function updatePhonePerson (id, updatePerson){
-  const request = axios.put(`${urlPersons}/${id}`, updatePerson);
-  return await request.then(response => response.data)
+async function updatePhonePerson(id, updatePerson) {
+  try {
+    const request = await axios.put(`${urlPersons}/${id}`, updatePerson);
+    return request.data;
+  } catch (error) {
+    console.log("ocurrio un error", error);
+  }
 }
 
-async function deletePerson (id) {
-  const request = axios.delete(`${urlPersons}/${id}`)
-  return await  request.then((response) => response.data);
+async function deletePerson(id) {
+  const request = await axios.delete(`${urlPersons}/${id}`)
+  return request.data;
 }
 
-export default { getAllPersons, createPerson, updatePhonePerson , deletePerson}
+export default { getAllPersons, createPerson, updatePhonePerson, deletePerson }

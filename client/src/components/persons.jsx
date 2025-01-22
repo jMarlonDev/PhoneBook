@@ -1,11 +1,11 @@
 import "../App.css";
 const Persons = ({ arrayPersons, handleDelete }) => {
-
+  console.log(arrayPersons);
   return (
     <>
       <div className="containerContacts">
         {arrayPersons.map((person) => (
-          <div key={person.id} className="contact">
+          <div key={person.id} className="contact"> {/* Añadimos la prop key */}
 
             <i className="bi bi-person-square"></i>
 
@@ -15,7 +15,7 @@ const Persons = ({ arrayPersons, handleDelete }) => {
             </div>
 
             <div>
-              <button onClick={() => handleDelete(person.id)} className="deleteBtn">Eliminar</button>
+              <button onClick={() => handleDelete(person)} className="deleteBtn">Eliminar</button>
             </div>
 
           </div>

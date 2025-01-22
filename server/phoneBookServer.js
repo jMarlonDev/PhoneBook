@@ -139,12 +139,12 @@ app.put("/api/contacts/:id", async (request, response) => {
   }
 })
 
-app.use(express.static(path.join(__dirname, 'dist')));// utilizamos el modulo path para mostrar los archivos estaticos 
+app.use(express.static(path.join(__dirname, '../client/dist/')));// utilizamos el modulo path para mostrar los archivos estaticos 
 // en al carpeta dist
 
 // Manejo de rutas para React Router
 app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, 'dist', 'index.html'));
+  res.sendFile(path.join(__dirname,"../client/" , 'dist/', 'index.html'));
 });
 
 

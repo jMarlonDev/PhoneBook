@@ -24,7 +24,7 @@ const path = require('path'); // Importa el módulo path para manejar archivos d
 app.use(express.json())
 
 app.use(cors({
-  origin: "*", // Permitir cualquier dominio
+  origin: "http://localhost:5173/", 
 }));
 
 mongoose.connect(urlMongo)

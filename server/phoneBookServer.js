@@ -1,116 +1,156 @@
 
-const express = require("express");
-const cors = require("cors");
+const express = require("express"); // importa el framework de exprees para contruir el servidor web
+// que permita poder recibir solicitudes como get , post , put , delete y procesarla
+
+const cors = require("cors");// importa el Middleware CORS para permitir hacer peticiones de diferentes urls
+const mongoose = require("mongoose"); //Importa el modulo de mongoose para poder conectarse a la base de datos de MongoDB
+// y crear el esquema de como  se van a guardar los datos en la base de datos
+
+require("dotenv").config(); // importa y configura dotenv que me permite leer
+// variables de entorno desde el archivo .env
+
+const urlMongo = process.env.MONGODB_URI;
+
 const app = express();
-const contactsObj = require("./data/contacts.json");
-let contacts = contactsObj.contacts;
-const path = require('path'); // Importa el módulo path
-/* Middlewares:
+const Contact = require("./models/contact.js")
+const path = require('path'); // Importa el módulo path para manejar archivos de los directorios del computador
+
+/* 
+ * Middlewares:
  * - json() para poder cuando se haga la solicitud al servidor este envíe la respuesta en formato JSON 
  * - cors() para poder solucionar el problema de intentar hacer peticiones de Origen Cruzado con 
- *   este Middlewar podremos hacer solicitudes desde cualquier parte a nuestro servidor */
+ *   este Middlewar podremos hacer solicitudes desde cualquier parte a nuestro servidor 
+*/
 app.use(express.json())
 
 app.use(cors({
   origin: "*", // Permitir cualquier dominio
 }));
 
-/* Rutas definidas para poder obtener y manipular los datos del archivo json */
+mongoose.connect(urlMongo)
+  .then(() => {
+    console.log("conectado a mongodb")
+  })
 
-/* Solicitud Get:
- * Indicamos la url donde se van a cargar los datos que provienen del archivo json contactsObj 
- * y enviamos como respuesta todos los datos de ese archivo en formato json 
- * ahora al cargar la url de http://localhost:3001/contacts/ se van a cargar los datos en formato json*/
-app.use(express.static(path.join(__dirname, 'dist')));
+/* Rutas definidas para poder obtener y manipular los datos de la base de datos MongoDB*/
 
-app.get("/api/contacts", (request, response) => {
-  response.json(contacts);
-})
-
-// Manejo de rutas para React Router
-app.get('*', (req, res) => {
-    res.sendFile(path.join(__dirname, 'dist', 'index.html'));
-});
-
-
-/* Solicitud Post
- * Para crear un nuevo elemento: debemos primero usar el metodo post y hacer la solicitud a la url /contacts
- * siempre para hacer este tipo de solicitud se debe crear un nuevo elemento con 
- * los datos enviados en la solicitud request.body
- * En esta parte lo que hacemos es generar un id automaticamente primero recorriendo 
- * el arreglo con todos los elementos y utilizamos la funcion Math.max
- * por Ejemplo: si en el arreglo hay estos IDs 
- * [
- * {id:1 , name:"j"} , {id:2 ,name:m} , {id:3}
- * ]
- * la funcion Math.max(retorna 1, 2 , 3 y devuelve el mayor en este caso 3)
- * y a este numero le suma 1 así comprobamos que cada vez que se genere un nuevo elemento lo haga en orden
+/* 
+ * Solicitud Get:
+ * Indicamos la url donde se van a cargar los datos que provienen de la base de datos 
+ * luego con el esquema de Contact definido como modelo buscamos todos los datos con find()
+ * y envíamos como respuesta todos los datos en formato JSON
 */
 
-app.post("/api/contacts", (request, response) => {
-  const newContact = request.body;
+app.get("/api/contacts", async (request, response) => {
+  try {
+    const contacts = await Contact.find();
+    response.json(contacts)
+  } catch (error) {
+    response.status(500).json({ error: "Error al obtener los contactos" });
+  }
+})
 
-  newContact.id = contacts.length > 0 ? Math.max(...contacts.map((contact) => contact.id)) + 1 : 1;
-  contacts.push(newContact);
-  response.json(newContact);
+/* Solicitud Post
+ * Para crear un nuevo elemento: debemos primero usar el metodo post y hacer la solicitud a la url api/contacts
+ * siempre para hacer este tipo de solicitud se debe crear un nuevo elemento con 
+ * los datos enviados en la solicitud request.body
+ * luego con el modelo Contact utilizamos el metodo de create para crear el nuevo contacto que
+ * se envía en el cuerpo de la solicitud y envíamos como respuesta ese nuevo dato o elemento 
+ * en formato JSON
+*/
+
+app.post("/api/contacts", async (request, response) => {
+  const newContact = request.body;
+  try {
+    const createContact = await Contact.create(newContact);
+    response.json(createContact);
+
+  } catch (error) {
+    response.status(500).json({ error: 'error al crear el contacto' });
+  }
 })
 
 
 /* 
  * Solicitud Delete:
- * Para poder hacer una solicitud delete primero debemos indicar la url /contacts que es la 
+ * Para poder hacer una solicitud delete primero debemos indicar la url api/contacts que es la 
  * que contiene los datos que se van a mostrar en la interfaz
  * aquí le indicamos que necesitamos recibir un parametro en la solicitud (request ) que es el ID. 
- * como todos los parametros que son enviados en la solicitud son Strings lo convertimos en un numero.
- * Luego verificamos si el ID que viene en la solicitud se encuentra dentro de nuestro array de elementos
- * y luego modificamos nuestro array de elementos para que muestre todos los elementos excepto 
- * el elemento que contenga el ID que se paso en la solicitud si se encuentra.
+ * Luego verificamos que el id que se ha pasado en la solicitud no este vacío de ser así 
+ * vamos a mostrar un error en la consola 
+ * luego de verificar si el id no esta vacío entonces vamos a buscar el dato y lo vamos a eliminar
+ * con findByIdAndDelete , y si no existe el dato entonces mandamos un error desde el servidor
 */
 
-app.delete("/api/contacts/:id", (request, response) => {
-  const id = Number(request.params.id);
-  const contactFind = contacts.find((contact) => contact.id === id);
+app.delete("/api/contacts/:id", async (request, response) => {
 
-  if (!contactFind) {
-    return response.status(404).json({
-      message: "El contacto que quieres eliminar no existe o no se encuentra en tu agenda de telefono"
-    }
-    )
+  const id = request.params.id;
+  if (id == null) {
+    response.status(403).json({
+      error: 'The id cant be null'
+    })
+    return;
   }
-  contacts = contacts.filter((contact) => contact.id !== id);
-  response.json(contacts);
-})
+
+  try {
+    const deleteContact = await Contact.findByIdAndDelete(id);
+    console.log("borrado " + id);
+
+    if (!deleteContact) {
+      return response.status(404).json({
+        message: "El contacto que quieres eliminar no existe o no se encuentra en la agenda de contactos"
+      })
+    }
+
+    response.json(deleteContact);
+
+  } catch (error) {
+    console.error(error);
+    response.status(500).json({ error: 'Error al eliminar el contacto' });
+  }
+
+});
 
 /* Solicitud Put:
  * para poder hacer esta solicitud tambien debemos indicar la url y un parametro ID que viene desde la solicitud ( request )
- * aquí como cada dato enviado como parametro en la solicitud es un string lo convertimos a un numero
- * y creamos una constante de un nuevo elemento que va a contener los datos ingresados ya sea enla interfaz 
- * que vienen en la solicitud ( request.body )
- * Luego creamos una nueva constante que va a almacenar el elemento que queremos actualizar
- * comprobando si el elemento con el id que viene desde la request existe dentro de mi arreglo 
- * de ser así entonces modificamos el arreglo original pasando el objeto o elemento que ya teníamos 
- * pero sobreescribiendo las propiedades modificadas desde la interfaz 
- * y devolvemos como respuesta el nuevo elemento ya modificado al cliente
+ * y también recibo el cuerpo de la solicitud para poder actualizar el contacto
+ * primero buscamos el elemento con ayuda del modelo de Contact findByIdAndUpdate que me permite buscar el contacto 
+ * y actualizarlo si todo sale bien se me envía el contacto con los nuevos cambios que se hicieron en el contacto
+ * pero si el contacto no existe dentro de la base de datos entonces mostramos un error en el servidor
  * */
 
-app.put("/api/contacts/:id", (request, response) => {
-  const id = Number(request.params.id);
+app.put("/api/contacts/:id", async (request, response) => {
+  const id = request.params.id;
   const newContact = request.body;
-  const contactsUpdate = contacts.find((contact) => contact.id === id);
-  if (!contactsUpdate) {
-    return response.json({
-      message: "El contacto que quieres actualizar no se encuentra en la agenda de contactos"
-    })
+
+  try {
+    const updateContact = await Contact.findByIdAndUpdate(id, newContact, { new: true });
+
+    if (!updateContact) {
+      return response.status(404).json({
+        message: "El usuario que quieres actualizar no se encuentra en la agenda de contactos"
+      })
+    }
+
+    response.json(updateContact);
+
+  } catch (error) {
+    response.status(500).json({ error: 'Error al actualizar el contacto' });
   }
-
-  contacts = contacts.map((contact) => contact.id === id ? { ...contact, ...newContact } : contact);
-  response.json(newContact);
-
 })
 
-const PORT = process.env.PORT || 3000;
+app.use(express.static(path.join(__dirname, 'dist')));// utilizamos el modulo path para mostrar los archivos estaticos 
+// en al carpeta dist
+
+// Manejo de rutas para React Router
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, 'dist', 'index.html'));
+});
+
+
+const PORT = process.env.PORT || 3001;
 
 app.listen(PORT, () => {
-  console.log("l servidor esta prendido en el puerto 3001");
+  console.log("l servidor esta prendido en el puerto", PORT);
 })
 

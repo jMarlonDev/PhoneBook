@@ -15,6 +15,7 @@ const app = express();
 const Contact = require("./models/contact.js")
 const path = require('path'); // Importa el módulo path para manejar archivos de los directorios del computador
 
+const allURLS = process.env.PORT || "https://phonebook-and5.onrender.com";
 /* 
  * Middlewares:
  * - json() para poder cuando se haga la solicitud al servidor este envíe la respuesta en formato JSON 
@@ -24,7 +25,7 @@ const path = require('path'); // Importa el módulo path para manejar archivos d
 app.use(express.json())
 
 app.use(cors({
-  origin: "*", // Permitir cualquier dominio
+  origin: allURLS, // Permitir cualquier dominio
 }));
 
 mongoose.connect(urlMongo)
